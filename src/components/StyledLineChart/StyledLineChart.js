@@ -1,17 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import _ from 'lodash';
 import { Line } from 'react-chartjs-2';
 import moment from 'moment';
 import { readString } from 'react-papaparse';
-import { tempData } from './data';
-
-import dataCsv from './data.csv' ;
 
 const colorMap = [
 	'rgb(255, 99, 132)',
 	'rgb(197, 213, 203)',
-	'rgb(84, 52, 255)',
+	'rgb(196, 184, 255)',
 	'rgb(33, 220, 244)',
 	'rgb(164, 255, 203)',
 	'rgb(195, 107, 119)',
@@ -40,26 +37,22 @@ const options = {
     	time: { parser: 'YYYY/MM/DD HH:mm:ss' }
     }]
   },
+  legend: {
+  	position: 'right'
+  }
 }
 
 
-const StyledLineChart = () => {
-	const parsedData = readString(tempData, { 
-		header: true,
-		dynamicTyping: true,
-		skipEmptyLines: true,
-		transformHeader: h => {
-			if (_.isEmpty(h)) {
-				return "Timestamp";
-			}
-			return h;
-		}
-	});
+const StyledLineChart = ({ uploadedFile }) => {
+	let uploadedData = [];
+	if (!_.isEmpty(uploadedFile)) {
+		uploadedData = _.map(uploadedFile, row => row.data);
+	}
 
-	const headers = _.keys(parsedData.data[0]);
+	const headers = _.keys(uploadedData[0]);
 
 	const mapDataset = header => {
-		return _.map(parsedData.data, d => {
+		return _.map(uploadedData, d => {
 			const dataPoint = _.get(d, header);
 			if (!_.isNull(dataPoint)) {
 				return {
@@ -80,12 +73,10 @@ const StyledLineChart = () => {
 				yAxisId: header,
 				fill: false,
 				borderColor: colorMap[index],
-				borderWidth: 1
+				borderWidth: .5
 			};
 		})
 	};
-
-	console.log('data', data);
 
 	return (
 		<Container>
@@ -101,5 +92,7 @@ const StyledLineChart = () => {
 export default StyledLineChart;
 
 const Container = styled.div`
+	display: flex;
+	flex: 1;
 	padding: 20px;
 `;
