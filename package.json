@@ -6,10 +6,20 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "chart.js": "^2.9.4",
+    "chartjs-plugin-annotation": "^0.5.7",
+    "chartjs-plugin-datasource": "^0.1.0",
+    "csv-parse": "^4.14.2",
+    "lodash": "^4.17.20",
+    "moment": "^2.29.1",
     "react": "^17.0.1",
+    "react-chartjs-2": "^2.11.1",
     "react-dom": "^17.0.1",
+    "react-papaparse": "^3.11.1",
     "react-scripts": "4.0.1",
-    "web-vitals": "^0.2.4"
+    "styled-components": "^5.2.1",
+    "web-vitals": "^0.2.4",
+    "xlsx": "^0.16.9"
   },
   "scripts": {
     "start": "react-scripts start",
