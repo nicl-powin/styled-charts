@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import _ from 'lodash';
 import { Line } from 'react-chartjs-2';
 import moment from 'moment';
-import { readString } from 'react-papaparse';
 
 const colorMap = [
 	'rgb(255, 99, 132)',
@@ -19,35 +18,54 @@ const colorMap = [
 	'rgb(146, 40, 4)',
 ];
 
-const options = {
-  title: {
-  	display: true,
-  	text: 'Test Styled Chart'
-  },
-  scales: {
-    yAxes: [
-      {
-        ticks: {
-          beginAtZero: true,
-        },
-      },
-    ],
-    xAxes: [{
-    	type: 'time',
-    	time: { parser: 'YYYY/MM/DD HH:mm:ss' }
-    }]
-  },
-  legend: {
-  	position: 'right'
-  }
-}
 
+const StyledLineChart = ({ uploadedData, customParams }) => {
+	const [ options, setOptions ] = useState({
+		title: {
+			display: false,
+			text: '',
+			fontSize: 15,
+		},
+	 	scales: {
+	    	yAxes: [
+	      		{
+	        		ticks: {
+	          			beginAtZero: true,
+	        	},
+	      	},
+	    ],
+	    xAxes: [{
+	    	type: 'time',
+	    	time: {
+	    		parser: 'YYYY/MM/DD HH:mm:ss'
+	    	}
+	    }]
+	  },
+	  legend: {
+	  		position: 'right'
+	  },
+	  animation: false,
+	  tooltips: {
+	  	enabled: false
+	  },
+	  elements: {
+	  	line: {
+	  		tension: 0
+	  	}
+	  }
+	});
+	useEffect(() => {
+		console.log('options', options);
+		console.log('customParams', customParams);
+		setOptions({ ...options, title: {
+			display: _.get(customParams.title, 'display', false),
+			text: _.get(customParams.title, 'text', '')
+		}});
+		chartRef.current.chartInstance.update();
+	}, [customParams]);
+	let chartImage = '';
+	const chartRef = useRef(null);
 
-const StyledLineChart = ({ uploadedFile }) => {
-	let uploadedData = [];
-	if (!_.isEmpty(uploadedFile)) {
-		uploadedData = _.map(uploadedFile, row => row.data);
-	}
 
 	const headers = _.keys(uploadedData[0]);
 
@@ -73,7 +91,8 @@ const StyledLineChart = ({ uploadedFile }) => {
 				yAxisId: header,
 				fill: false,
 				borderColor: colorMap[index],
-				borderWidth: .5
+				borderWidth: .5,
+				spanGaps: true
 			};
 		})
 	};
@@ -83,7 +102,8 @@ const StyledLineChart = ({ uploadedFile }) => {
 			<Line
 				data={ data }
 				options={ options }
-
+				ref={ chartRef }
+				id="chart"
 			/>
 		</Container>
 	);

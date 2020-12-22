@@ -1,3 +1,24 @@
+/*Typeface Imports*/
+@font-face {
+    font-family: 'GT America';
+    src: local('GT America'), url(./fonts/GT-America-Bold.otf);
+    font-weight: 600;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'GT America';
+    src: local('GT America'), url(./fonts/GT-America-Medium.otf);
+    font-weight: 500;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'GT America';
+    src: local('GT America'), url(./fonts/GT-America-Regular.otf);
+    font-weight: 400;
+    font-style: normal;
+}
+
+
 /*Resets*/
 * {
 	box-sizing: border-box;
@@ -13,16 +34,31 @@ html, body, #root {
   font-family: GT America, sans-serif;
 }
 
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/*Type*/
+h2 {
+  font-size: 21px;
+  margin: 0 0 10px 0;
+  color: #151e27;
+  font-weight: 600;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+h3 {
+  font-size: 18px;
+  font-weight: 400;
+  color: #151e27;
+  margin: 0 0 15px;
+}
+
+h4 {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 10px;
+  text-transform: uppercase;
+}
+
+p {
+  font-size: 13px;
+  font-weight: 400;
+  color: #333940;
+  margin: 0;
 }
