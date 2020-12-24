@@ -4,6 +4,8 @@ import _ from 'lodash';
 import { Line } from 'react-chartjs-2';
 import moment from 'moment';
 
+import { chartOptions, formatChartData, updateChartHeaders } from '../../utils/chartData.utils';
+
 const colorMap = [
 	'rgb(255, 99, 132)',
 	'rgb(197, 213, 203)',
@@ -19,44 +21,23 @@ const colorMap = [
 ];
 
 
-const StyledLineChart = ({ uploadedData, customParams }) => {
-	const [ options, setOptions ] = useState({
-		title: {
-			display: false,
-			text: '',
-			fontSize: 15,
-		},
-	 	scales: {
-	    	yAxes: [
-	      		{
-	        		ticks: {
-	          			beginAtZero: true,
-	        	},
-	      	},
-	    ],
-	    xAxes: [{
-	    	type: 'time',
-	    	time: {
-	    		parser: 'YYYY/MM/DD HH:mm:ss'
-	    	}
-	    }]
-	  },
-	  legend: {
-	  		position: 'right'
-	  },
-	  animation: false,
-	  tooltips: {
-	  	enabled: false
-	  },
-	  elements: {
-	  	line: {
-	  		tension: 0
-	  	}
-	  }
-	});
+const StyledLineChart = ({ uploadedData, customParams, chartHeaders }) => {
+	const [chartData, setChartData ] = useState([]);
+	const [ options, setOptions ] = useState(chartOptions);
+
 	useEffect(() => {
-		console.log('options', options);
-		console.log('customParams', customParams);
+		const data = formatChartData(chartHeaders, uploadedData);
+		setChartData(data);
+		setOptions(chartOptions);
+	}, []);
+
+	useEffect(() => {
+		const data = formatChartData(chartHeaders, uploadedData)
+		setChartData(data);
+		// chartRef.current.chartInstance.update();
+	}, [chartHeaders]);
+
+	useEffect(() => {
 		setOptions({ ...options, title: {
 			display: _.get(customParams.title, 'display', false),
 			text: _.get(customParams.title, 'text', '')
@@ -66,41 +47,10 @@ const StyledLineChart = ({ uploadedData, customParams }) => {
 	let chartImage = '';
 	const chartRef = useRef(null);
 
-
-	const headers = _.keys(uploadedData[0]);
-
-	const mapDataset = header => {
-		return _.map(uploadedData, d => {
-			const dataPoint = _.get(d, header);
-			if (!_.isNull(dataPoint)) {
-				return {
-					x: moment(d['Timestamp']).format('YYYY/MM/DD HH:mm:ss'),
-					y: dataPoint
-				};
-			}
-			return;
-		});
-	};
-
-	let data = {
-		datasets: _.map(headers, (header, index) => {
-			return {
-				label: _.startCase(_.camelCase(header)),
-				data: mapDataset(header),
-				xAxisId: "Timestamp",
-				yAxisId: header,
-				fill: false,
-				borderColor: colorMap[index],
-				borderWidth: .5,
-				spanGaps: true
-			};
-		})
-	};
-
 	return (
 		<Container>
 			<Line
-				data={ data }
+				data={ chartData }
 				options={ options }
 				ref={ chartRef }
 				id="chart"

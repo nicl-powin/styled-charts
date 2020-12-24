@@ -1,48 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import _ from 'lodash';
 
 const ChartForm = ({ data, chartHeaders, onSubmit, onCancel }) => {
 	const [ hasTitle, setHasTitle ] = useState(false);
 	const [ title, setTitle ] = useState('');
-	console.log('data', data);
+	const [ chartData, setChartData ] = useState([]);
+	const [ labels, setLabels ] = useState([]);
+
+	useEffect(() => {
+		setLabels(chartHeaders);
+		setChartData(data);
+	}, [chartHeaders]);
+
+	const handleUpdateLabel = e => {
+		const newLabels = _.map(labels, l => l.value === e.target.id ? { ...l, label: e.target.value} : l);
+		setLabels(newLabels);
+	};
+
 
 	const handleSubmit = () => {
-		console.log('submit');
 		onSubmit({
-			title: {
-				display: hasTitle,
-				text: title
-			}
+			options: {
+				title: {
+					display: hasTitle,
+					text: title
+				},
+			},
+			labels
 		});
 	};
 
 	const renderHeaderList = headers => {
-		const handleUpdateHeader = data => {
-
-		};
-
 		return _.map(headers, header => {
 			return (
 				<ListSection key={ header.value }>
-					<Row>
-						<SectionTitle>{ header.value }</SectionTitle>
-						<InputContainer>
-							<Row>
-								<input
-									type="checkbox"
-									checked={ true }
-									onChange={ () => console.log('Changed') }
-								/>
-								<Label>Display</Label>
-							</Row>
-						</InputContainer>
-					</Row>
+					<SectionTitle>{ header.value }</SectionTitle>
 					<SectionContent>
 						<InputContainer>
 							<Row>
 								<Label>Label</Label>
-								<Input type="text" value={ header.label } />
+								<Input
+									type="text"
+									value={ header.label }
+									onChange={ handleUpdateLabel }
+									id={ header.value }
+								/>
 							</Row>
 						</InputContainer>
 					</SectionContent>
@@ -75,7 +78,7 @@ const ChartForm = ({ data, chartHeaders, onSubmit, onCancel }) => {
 			</Section>
 			<Section>
 				<h4>Data Headers</h4>
-				{ renderHeaderList(chartHeaders) }
+				{ renderHeaderList(labels) }
 			</Section>
 			<ButtonRow>
 				<CancelButton onClick={ onCancel }>Cancel</CancelButton>

@@ -16,7 +16,7 @@ const Upload = ({ handleUpload }) => {
   }
 
   const handleOnFileLoad = (data) => {
-    console.log('onLoad');
+    console.log('onLoad', data);
     handleUpload(data);
   }
 
@@ -85,7 +85,9 @@ const Button = styled.button`
   padding: 5px 10px;
 `;
 const RemoveButton = styled.button`
-  background: #d0d0d0;
+  background: #969696;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   border: none;
   color: #fff;

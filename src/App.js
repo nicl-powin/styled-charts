@@ -10,7 +10,7 @@ import Upload from './components/Upload/Upload';
 import ChartForm from './components/ChartForm/ChartForm';
 import Drawer from './components/Drawer/Drawer';
 
-import { getFormattedHeaders } from './utils/chartData.utils';
+import { getFormattedHeaders, updateChartHeaders } from './utils/chartData.utils';
 
 const App = () => {
   const [ uploadedData, setUploadedData ] = useState([]);
@@ -21,16 +21,19 @@ const App = () => {
 
   useEffect(() => {
     const formattedHeaders = getFormattedHeaders(uploadedData);
-    setChartHeaders(formattedHeaders)
-  }, [uploadedData])
+    setChartHeaders(formattedHeaders);
+  }, [uploadedData]);
 
   const handleUpload = data => {
     const chartData = _.map(data, row => row.data);
-    setUploadedData(chartData)
+    setUploadedData(chartData);
+    const formattedHeaders = getFormattedHeaders(uploadedData);
+    setChartHeaders(formattedHeaders);
   };
 
   const updateChart = data => {
-    setCustomParams(data);
+    setCustomParams(data.options);
+    setChartHeaders(data.labels);
     setFormIsOpen(false);
   };
 
@@ -42,7 +45,7 @@ const App = () => {
         </LogoContainer>
         <h2>Chart Formatting Tool</h2>
         <Description>
-          This tool is intended to ensure quality and continuity of all Powin charts. To get started, upload a CSV file using the button above.
+          This tool is intended to ensure quality and continuity of all Powin charts. To get started, upload a CSV file using the button below.
         </Description>
         <Upload handleUpload={ handleUpload } />
         { !_.isEmpty(uploadedData) &&
