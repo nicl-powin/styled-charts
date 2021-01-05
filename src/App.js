@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
 import styled from 'styled-components';
+import { saveAs } from 'file-saver';
 
 import './App.css';
 
@@ -18,11 +19,19 @@ const App = () => {
   const [ customParams, setCustomParams ] = useState({});
   const [ formIsOpen, setFormIsOpen ] = useState(false);
   const [ chartHeaders, setChartHeaders ] = useState([]);
+  const [ chartRef, setChartRef ] = useState(null);
+  const [ image, setImage ] = useState('');
 
   useEffect(() => {
     const formattedHeaders = getFormattedHeaders(uploadedData);
     setChartHeaders(formattedHeaders);
   }, [uploadedData]);
+
+  useEffect(() => {
+    if (chartRef !== null) {
+      setImage(chartRef.current.chartInstance.toBase64Image());
+    }
+  }, [chartRef])
 
   const handleUpload = data => {
     const chartData = _.map(data, row => row.data);
@@ -37,6 +46,13 @@ const App = () => {
     setFormIsOpen(false);
   };
 
+  const saveCanvas = () => {
+    const canvasSave = document.getElementById('chart');
+     canvasSave.toBlob(function (blob) {
+         saveAs(blob, "testing.png")
+     })
+  };
+
   return (
     <Container>
       <Left>
@@ -49,9 +65,14 @@ const App = () => {
         </Description>
         <Upload handleUpload={ handleUpload } />
         { !_.isEmpty(uploadedData) &&
-          <Button onClick={ () => setFormIsOpen(true) }>
-            Configure Chart
-          </Button>
+          <div>
+            <Button onClick={ () => setFormIsOpen(true) }>
+              Configure Chart
+            </Button>
+            <Button onClick={ saveCanvas }>
+              Save Chart Image
+            </Button>
+          </div>
         }
       </Left>
       <Flex>
@@ -60,6 +81,7 @@ const App = () => {
               uploadedData={ uploadedData }
               chartHeaders={ chartHeaders }
               customParams={ customParams }
+              setChartRef={ setChartRef }
             />
           : <Default>Upload a CSV to visualize data</Default>
         }

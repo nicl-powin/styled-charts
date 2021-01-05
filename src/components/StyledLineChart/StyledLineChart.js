@@ -21,7 +21,7 @@ const colorMap = [
 ];
 
 
-const StyledLineChart = ({ uploadedData, customParams, chartHeaders }) => {
+const StyledLineChart = ({ uploadedData, customParams, chartHeaders, setChartRef }) => {
 	const [chartData, setChartData ] = useState([]);
 	const [ options, setOptions ] = useState(chartOptions);
 
@@ -29,6 +29,8 @@ const StyledLineChart = ({ uploadedData, customParams, chartHeaders }) => {
 		const data = formatChartData(chartHeaders, uploadedData);
 		setChartData(data);
 		setOptions(chartOptions);
+		setChartRef(chartRef);
+		
 	}, []);
 
 	useEffect(() => {
@@ -44,7 +46,6 @@ const StyledLineChart = ({ uploadedData, customParams, chartHeaders }) => {
 		}});
 		chartRef.current.chartInstance.update();
 	}, [customParams]);
-	let chartImage = '';
 	const chartRef = useRef(null);
 
 	return (
